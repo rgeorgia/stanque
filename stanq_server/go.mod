@@ -1,4 +1,4 @@
-module github.com/rgeorgia/danque/dq_server
+module github.com/rgeorgia/stanque/dq_server
 
 go 1.21.3
 
