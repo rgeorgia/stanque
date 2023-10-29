@@ -68,8 +68,9 @@ func handleRequests() {
 
 func main() {
 	Files = []DQFile{
-		{Name: "agent", CheckSum: "21f951ed89a4a54064c12ee781df4bb167db578951e940790748cfa8da558021"},
-		{Name: "pid_checker", CheckSum: "445523ede4db9704353fa95a39328abda530f0e9d7c809049ea46564e069524b"},
+		{Name: "file_checker", CheckSum: "f62f0949ffa5a041e31b2fc706d93708ce93b62b7099f516380f8d39d15380c6"},
+		{Name: "pid_checker", CheckSum: "539181b57717e6f3430d599ca3b11fe18c9d405c8cfe3ff163037694e4864b1a"},
+		{Name: "agent", CheckSum: "b97ab6fabafba27199d50a190a2ad6513ccf8ee722558e86d2a45fd2ac535c67"},
 	}
 	handleRequests()
 }
