@@ -4,7 +4,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 
@@ -20,7 +20,10 @@ type DQFile struct {
 var Files []DQFile
 
 func homePage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome to the HomePage!")
+	_, err := fmt.Fprintf(w, "Welcome to the HomePage!")
+	if err != nil {
+		return
+	}
 	fmt.Println("Endpoint Hit: homePage")
 }
 
@@ -44,7 +47,7 @@ func createFileList(w http.ResponseWriter, r *http.Request) {
 	// get the body of our POST request
 	// unmarshal this into a new DQFile struct
 	// append this to our Files array.
-	reqBody, _ := ioutil.ReadAll(r.Body)
+	reqBody, _ := io.ReadAll(r.Body)
 	var article DQFile
 	json.Unmarshal(reqBody, &article)
 	// update our global Files array to include
