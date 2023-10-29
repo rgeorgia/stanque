@@ -11,77 +11,62 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Article - Our struct for all articles
-type Article struct {
-	Id      string `json:"Id"`
-	Title   string `json:"Title"`
-	Desc    string `json:"desc"`
-	Content string `json:"content"`
+// DQFile - Our struct for all articles
+type DQFile struct {
+	Name     string `json:"name"`
+	CheckSum string `json:"chksum"`
 }
 
-var Files []Article
+var Files []DQFile
 
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to the HomePage!")
 	fmt.Println("Endpoint Hit: homePage")
 }
 
-func returnAllArticles(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Endpoint Hit: returnAllArticles")
+func returnAllFIles(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Endpoint Hit: returnAllFIles")
 	json.NewEncoder(w).Encode(Files)
 }
 
-func returnSingleArticle(w http.ResponseWriter, r *http.Request) {
+func returnSingleFile(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	key := vars["id"]
 
 	for _, article := range Files {
-		if article.Id == key {
+		if article.Name == key {
 			json.NewEncoder(w).Encode(article)
 		}
 	}
 }
 
-func createNewArticle(w http.ResponseWriter, r *http.Request) {
+func createFileList(w http.ResponseWriter, r *http.Request) {
 	// get the body of our POST request
-	// unmarshal this into a new Article struct
+	// unmarshal this into a new DQFile struct
 	// append this to our Files array.
 	reqBody, _ := ioutil.ReadAll(r.Body)
-	var article Article
+	var article DQFile
 	json.Unmarshal(reqBody, &article)
 	// update our global Files array to include
-	// our new Article
+	// our new DQFile
 	Files = append(Files, article)
 
 	json.NewEncoder(w).Encode(article)
 }
 
-func deleteArticle(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id := vars["id"]
-
-	for index, article := range Files {
-		if article.Id == id {
-			Files = append(Files[:index], Files[index+1:]...)
-		}
-	}
-
-}
-
 func handleRequests() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.HandleFunc("/", homePage)
-	myRouter.HandleFunc("/articles", returnAllArticles)
-	myRouter.HandleFunc("/article", createNewArticle).Methods("POST")
-	myRouter.HandleFunc("/article/{id}", deleteArticle).Methods("DELETE")
-	myRouter.HandleFunc("/article/{id}", returnSingleArticle)
+	myRouter.HandleFunc("/files", returnAllFIles)
+	myRouter.HandleFunc("/files", createFileList).Methods("POST")
+	myRouter.HandleFunc("/files/{name}", returnSingleFile)
 	log.Fatal(http.ListenAndServe(":10000", myRouter))
 }
 
 func main() {
-	Files = []Article{
-		Article{Id: "1", Title: "Hello", Desc: "Article Description", Content: "Article Content"},
-		Article{Id: "2", Title: "Hello 2", Desc: "Article Description", Content: "Article Content"},
+	Files = []DQFile{
+		{Name: "agent", CheckSum: "21f951ed89a4a54064c12ee781df4bb167db578951e940790748cfa8da558021"},
+		{Name: "pid_checker", CheckSum: "445523ede4db9704353fa95a39328abda530f0e9d7c809049ea46564e069524b"},
 	}
 	handleRequests()
 }
